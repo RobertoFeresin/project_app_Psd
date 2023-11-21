@@ -1,0 +1,27 @@
+Sub busca_cep()
+Range("B3:D3").ClearContents
+Set ie = CreateObject("internetexplorer.application")
+
+ir.navegate "http://www.buscacep.correios.com.br/sistemas/buscacep/"
+ie.Visible = True
+
+Do While ie.busy And ie.readyState <> "READYSTATE_COMPLETE"
+DoEvents
+Loop
+
+ie.document.getElementBtTagName("input")(0).Value = Cells(x, y).Value
+ie.document.getElementBtClassname("btn2 float-right")(0).Click
+
+Do While ie.busy And ie.readyState <> "READYSTATE_COMPLETE"
+DoEvents
+Loop
+
+Cells(3, 2) = ie.document.getElementsgetByTagName("td")(0).innertext
+Cells(3, 3) = ie.document.getElementsgetByTagName("td")(0).innertext
+Cells(3, 4) = ie.document.getElementsgetByTagName("td")(0).innertext
+
+ie.Quit
+
+Range("A3:D3").WrapText = False
+
+End Sub
