@@ -1,0 +1,57 @@
+import speech_recognition as sr
+import requests
+
+def reconhecer_fala():
+    microfone = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Diga o CEP por extenso")
+        audio = microfone.listen(source)
+        try:
+            frase = microfone.recognize_google(audio, language='pt-BR')    
+            return frase
+        except sr.UnknownValueError:
+            print('Não foi possível entender o que você disse.')
+        except sr.RequestError:
+            print('Não foi possível se conectar ao serviço de reconhecimento de fala.')
+
+def string_para_numero(string):
+    mapeamento = {
+        'um': 1,
+        'dois': 2,
+        'três': 3,
+        'quatro': 4,
+        'cinco': 5,
+        'seis': 6,
+        'meia': 6,
+        'sete': 7,
+        'oito': 8,
+        'nove': 9,
+        'dez': 10,
+        'zero': 0,
+    }
+
+    numeros = string.split()  # Divide a string em palavras
+    numeros_convertidos = []
+
+    for palavra in numeros:
+        palavra = palavra.lower()
+        if palavra in mapeamento:
+            numeros_convertidos.append(str(mapeamento[palavra]))
+
+    return numeros_convertidos
+
+# Captura a entrada de voz
+cep = reconhecer_fala()
+print("CEP por extenso:", cep)
+
+# Converte a entrada de voz para números
+try:
+    numeros_convertidos = string_para_numero(cep)
+    print("Números correspondentes:", ' '.join(numeros_convertidos))
+except ValueError as e:
+    print(e)
+
+# Agora você pode usar a variável 'cep' na sua URL
+link = f'https://viacep.com.br/ws/{cep}/json/'
+requisicao = requests.get(link)
+# Restante do seu código...
