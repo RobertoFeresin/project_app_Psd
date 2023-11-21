@@ -54,4 +54,3 @@ except ValueError as e:
 # Agora você pode usar a variável 'cep' na sua URL
 link = f'https://viacep.com.br/ws/{cep}/json/'
 requisicao = requests.get(link)
-# Restante do seu código...
