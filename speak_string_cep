@@ -1,0 +1,147 @@
+import speech_recognition as sr
+import requests
+
+def reconhecer_fala():
+    microfone = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Diga o CEP por extenso")
+        audio = microfone.listen(source)
+        try:
+            frase = microfone.recognize_google(audio, language='pt-BR')
+            return frase
+        except sr.UnknownValueError:
+            print('Não foi possível entender o que você disse.')
+        except sr.RequestError:
+            print('Não foi possível se conectar ao serviço de reconhecimento de fala.')
+
+def string_para_numero(string):
+    mapeamento = {
+        'um': 1,
+        'dois': 2,
+        'três': 3,
+        'quatro': 4,
+        'cinco': 5,
+        'seis': 6,
+        'meia': 6,
+        'sete': 7,
+        'oito': 8,
+        'nove': 9,
+        'dez': 10,
+        'onze': 11,
+        'doze': 12,
+        'treze': 13,
+        'catorze': 14,
+        'quatorze': 14,
+        'quinze': 15,
+        'dezeseis': 16,
+        'dezesete': 17,
+        'dezoito': 18,
+        'dezenove': 19,
+        'vinte': 20,
+        'vinte e um': 21,
+        'vinte e dois': 22,
+        'vinte e três': 23,
+        'vinte e quatro': 24,
+        'vinte e cinco': 25,
+        'vinte e seis': 26,
+        'vinte e sete': 27,
+        'vinte e oito': 28,
+        'vinte e nove': 29,
+        'trinta': 30,
+        'trinta e um': 31,
+        'trinta e dois': 32,
+        'trinta e três': 33,
+        'trinta e quatro': 34,
+        'trinta e cinco': 35,
+        'trinta e seis': 36,
+        'trinta e sete': 37,
+        'trita e oito': 38,
+        'trinta e nove':39,
+        'quarenta': 40,
+        'quarenta e um': 41,
+        'quarenta e dois': 42,
+        'quarenta e três': 43,
+        'quarenta e quatro': 44,
+        'quarenta e cinco': 45,
+        'quarenta e seis': 46,
+        'quarenta e sete': 47,
+        'quarenta e oito': 48,
+        'quarenta e nove': 49,
+        'cinquenta': 50,
+        'cinquenta e um': 51,
+        'cinquenta e dois': 52,
+        'cinquenta e três': 53,
+        'cinquenta e quatro': 54,
+        'cinquenta e cinco': 55,
+        'cinquenta e seis': 56,
+        'cinquenta e sete': 57,
+        'cinquenta e oito': 58,
+        'cinquenta e nove': 59,
+        'sessenta': 60,
+        'sessenta e um': 61,
+        'sessenta e dois': 62,
+        'sessenta e três': 63,
+        'sessenta e quatro': 64,
+        'sessenta e cinco': 65,
+        'sessenta e seis': 66,
+        'sessenta e sete': 67,
+        'sessenta e oito': 68,
+        'sessenta e nove': 69,
+        'setenta': 70,
+        'setenta e um': 71,
+        'setenta e dois': 72,
+        'setenta e três': 73,
+        'setenta e quatro': 74,
+        'setenta e cinco': 75,
+        'setenta e seis': 76,
+        'setenta e sete': 77,
+        'setenta e oito': 78,
+        'setenta e nove': 79,
+        'oitenta': 80,
+        'oitenta e um': 81,
+        'oitenta e dois': 82,
+        'oitenta e três': 83,
+        'oitenta e quatro': 84,
+        'oitenta e cinco': 85,
+        'oitenta e seis': 86,
+        'oitenta e sete': 87,
+        'oitenta e oito': 88,
+        'oitenta e nove': 89,
+        'noventa ': 90,
+        'noventa e um': 91,
+        'noventa e dois': 92,
+        'noventa e tres': 93,
+        'noventa e quatro': 94,
+        'noventa e cinco': 95,
+        'noventa e seis': 96,
+        'noventa e sete': 97,
+        'noventa e oito': 98,
+        'noventa e nove': 99,
+        'sem': 100,
+        'cem': 100,
+        'zero': 0,
+    }
+
+    numeros = string.split()  # Divide a string em palavras
+    numeros_convertidos = []
+
+    for palavra in numeros:
+        palavra = palavra.lower()
+        if palavra in mapeamento:
+            numeros_convertidos.append(str(mapeamento[palavra]))
+
+    return numeros_convertidos
+
+# Captura a entrada de voz
+cep = reconhecer_fala()
+print("CEP por extenso:", cep)
+
+# Converte a entrada de voz para números
+try:
+    numeros_convertidos = string_para_numero(cep)
+    print("Números correspondentes:", ' '.join(numeros_convertidos))
+except ValueError as e:
+    print(e)
+
+link = f'https://viacep.com.br/ws/{cep}/json/'
+requisicao = requests.get(link)
