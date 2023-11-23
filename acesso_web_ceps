@@ -1,0 +1,57 @@
+//pip install SpeechRecoginition
+//pip install pyaudio
+//pip install requests
+//pip install webbrowser
+
+import tkinter as tk
+import webbrowser
+import speech_recognition as sr
+
+def reconhecer_fala():
+    microfone = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Diga o CEP por extenso")
+        audio = microfone.listen(source)
+        try:
+            frase = microfone.recognize_google(audio, language='pt-BR')
+            return frase
+        except sr.UnknownValueError:
+            print('Não foi possível entender o que você disse.')
+        except sr.RequestError:
+            print('Não foi possível se conectar ao serviço de reconhecimento de fala.')
+
+def obter_cep():
+    cep = reconhecer_fala()
+    try:
+        return cep
+    except ValueError as e:
+        print(e)
+
+# Função chamada ao clicar no botão
+def obter_ceps():
+    cep_origem = obter_cep()
+    cep_destino = obter_cep()
+
+    # Abre os CEPs no Google Maps
+    abrir_google_maps(cep_origem, cep_destino)
+
+def abrir_google_maps(cep_origem, cep_destino):
+    url_origem = f"https://www.google.com/maps/search/{cep_origem}"
+    url_destino = f"https://www.google.com/maps/search/{cep_destino}"
+
+    webbrowser.open(url_origem)
+    webbrowser.open(url_destino)
+
+# Criar a interface Tkinter
+janela = tk.Tk()
+janela.title("Reconhecimento de Fala de CEP")
+
+# Criar e posicionar widgets
+rotulo = tk.Label(janela, text="Clique no botão para fornecer dois destinos de CEP por voz.")
+rotulo.pack(pady=10)
+
+botao = tk.Button(janela, text="Obter CEPs", command=obter_ceps)
+botao.pack(pady=10)
+
+# Iniciar o loop principal da janela
+janela.mainloop()
